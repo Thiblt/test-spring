@@ -19,17 +19,18 @@ public interface VilleRepository extends CrudRepository<Ville, Integer> {
 	
 	List<Ville> findByNomStartingWith(String prefix);
 	
+	
 	List<Ville> findByNbHabitantGreaterThan(int minPopulation);
 	
 	List<Ville> findByNbHabitantGreaterThanAndNbHabitantLessThan(int minPopulation, int maxPopulation);
 
 
-    List<Ville> findByDepartementNomAndNbHabitantGreaterThan(String departementNom, int minPopulation);
+    List<Ville> findByDepartementNomAndNbHabitantGreaterThan(Departement departementNom, int minPopulation);
 
-    List<Ville> findByDepartementNomAndNbHabitantGreaterThanAndNbHabitantLessThan(String departementNom, int minPopulation, int maxPopulation);
+    List<Ville> findByDepartementNomAndNbHabitantGreaterThanAndNbHabitantLessThan(Departement departementNom, int minPopulation, int maxPopulation);
 
-    @Query("SELECT v FROM Ville v WHERE v.departement.nom = :departementNom ORDER BY v.population DESC limit = :n")
-    List<Ville> findTopNVillesByDepartement(@Param("departementNom") String departementNom,@Param("n") int n);
+    @Query("SELECT v FROM Ville v WHERE v.departement.nom = :departementNom ORDER BY v.nbHabitant DESC")
+    List<Ville> findTopNVillesByDepartement(@Param("departementNom") String departementNom);
 
 	Ville findById(Long id);
 

@@ -2,6 +2,8 @@ package fr.diginamic.hello.entity;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,22 +14,22 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 public class Departement {
-	@NotNull
 	@Size(min=2)
 	private String nom;
 	
-	private int codeDepartement ;
+	private String codeDepartement ;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@OneToMany(mappedBy="departement")
+	@JsonIgnore
 	private Set<Ville> villes;
 	
 	public Departement() {}
 
-	public Departement(@NotNull @Size(min = 2) String nom, Long id, int codeDepartement, Set<Ville> villes) {
+	public Departement(@NotNull @Size(min = 2) String nom, Long id, String codeDepartement, Set<Ville> villes) {
 		this.nom = nom;
 		this.id = id;
 		this.villes = villes;
@@ -58,11 +60,11 @@ public class Departement {
 		this.villes = villes;
 	}
 
-	public int getCodeDepartement() {
+	public String getCodeDepartement() {
 		return codeDepartement;
 	}
 
-	public void setCodeDepartement(int codeDepartement) {
+	public void setCodeDepartement(String codeDepartement) {
 		this.codeDepartement = codeDepartement;
 	} 
 	

@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.diginamic.hello.dto.DepartementDto;
 import fr.diginamic.hello.entity.Departement;
-import fr.diginamic.hello.entity.Ville;
+import fr.diginamic.hello.exception.RestException;
 import fr.diginamic.hello.service.DepartementService;
 
 @RestController
@@ -25,43 +26,55 @@ public class DepartementControlleur {
 	    private DepartementService departementService;
 
 	    @GetMapping
-	    public List<Departement> displayVille() {
-	        return departementService.extractDepartements();
+	    public List<DepartementDto> displayVille() throws RestException {
+	        List<DepartementDto> departements= departementService.extractDepartements();
+	        if(departements.isEmpty()) {
+	    		throw  new RestException("Aucun departement trouvée");
+	    	}
+	    	return departements;
 	    }
 
 	    @GetMapping("/{id}")
-	    public Departement displayVilleById(@PathVariable Long id) {
-	        return departementService.extractDepartement(id);
+	    public DepartementDto displayVilleById(@PathVariable Long id) throws RestException {
+	        DepartementDto departement= departementService.extractDepartement(id);
+	        if(departement==null) {
+	    		throw new RestException("Aucun departement trouvée");
+	    	}
+	    	return departement;
 	    }
 
 	    @GetMapping("/nom/{nom}")
-	    public Departement displayVilleByNom(@PathVariable String nom) {
-	        return departementService.extractDepartement(nom);
+	    public DepartementDto displayVilleByNom(@PathVariable String nom) throws RestException {
+	    	DepartementDto departement=departementService.extractDepartement(nom);
+	        if(departement==null) {
+	    		throw new RestException("Aucun departement trouvée");
+	    	}
+	    	return departement;
 	    }
 
 	    @PostMapping
-	    public ResponseEntity<String> saveDepartement(@RequestBody Departement departement) {
+	    public ResponseEntity<String> saveDepartement(@RequestBody DepartementDto departement) throws RestException {
 	    	Departement departementAjouter = departementService.insertDepartement(departement);
 	        if (departementAjouter == null) {
-	            return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+	        	throw new RestException("le département n'a pas pu être ajouter");
 	        }
 	        return new ResponseEntity<>("Success", HttpStatus.CREATED);
 	    }
 
 	    @PutMapping("/{id}")
-	    public ResponseEntity<String> modifyDepartement(@RequestBody Departement departement, @PathVariable Long id) {
+	    public ResponseEntity<String> modifyDepartement(@RequestBody DepartementDto departement, @PathVariable Long id) throws RestException {
 	    	Departement departementModifier = departementService.modifierDepartement(id, departement);
 	        if (departementModifier == null) {
-	            return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+	        	throw new RestException("le département n'a pas pu être modifié");
 	        }
 	        return new ResponseEntity<>("Success", HttpStatus.OK);
 	    }
 
 	    @DeleteMapping("/{id}")
-	    public ResponseEntity<String> deleteVille(@PathVariable Long id) {
+	    public ResponseEntity<String> deleteVille(@PathVariable Long id) throws RestException {
 	    	Departement departementSupprimer = departementService.supprimerDepartement(id);
 	        if (departementSupprimer == null) {
-	            return new ResponseEntity<>("Error", HttpStatus.BAD_REQUEST);
+	        	throw new RestException("le département n'a pas pu être supprimé");
 	        }
 	        return new ResponseEntity<>("Success", HttpStatus.OK);
 	    }
